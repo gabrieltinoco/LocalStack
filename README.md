@@ -50,3 +50,7 @@ Este projeto implementa uma API RESTful utilizando Serverless Framework, AWS Lam
 -   LocalStack (Emulador AWS)
     
 -   AWS Lambda, DynamoDB, SNS
+
+## 🔍 Evidências
+
+![Evidencias](evidencias-de-teste.png)
