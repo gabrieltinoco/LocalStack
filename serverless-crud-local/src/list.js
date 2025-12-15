@@ -1,10 +1,12 @@
 const AWS = require('aws-sdk');
 
 // Configuração para apontar para o LocalStack
-const dynamoDb = new AWS.DynamoDB.DocumentClient({
-    endpoint: 'http://localhost:4566',
-    region: 'us-east-1'
-});
+const endpoint = process.env.LOCALSTACK_HOSTNAME
+    ? `http://${process.env.LOCALSTACK_HOSTNAME}:4566`
+    : 'http://localhost:4566';
+
+const dynamoDb = new AWS.DynamoDB.DocumentClient({ endpoint });
+const sns = new AWS.SNS({ endpoint });
 
 module.exports.handler = async (event) => {
     try {

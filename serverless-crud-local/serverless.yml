@@ -1,6 +1,6 @@
 service: serverless-crud-local
 
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
@@ -9,6 +9,7 @@ provider:
   region: us-east-1
   environment:
     TABLE_NAME: ItemsTable
+    # Apontamos para o ARN padrão do LocalStack
     TOPIC_ARN: arn:aws:sns:us-east-1:000000000000:NotifyTopic
   iam:
     role:
@@ -27,22 +28,20 @@ custom:
   localstack:
     stages:
       - local
-    host: http://localhost  # Importante para conectar no Docker
+    host: http://localhost
     edgePort: 4566
     autostart: true
-    lambda:
-      # Melhora performance em dev
-      mountCode: true
+    # lambda:       <-- Mantive comentado para evitar o erro de mountCode
+    #   mountCode: true
 
 functions:
-  # --- CRUD ---
   createItem:
     handler: src/create.handler
     events:
       - http:
           path: items
           method: post
-  
+
   listItems:
     handler: src/list.handler
     events:
@@ -76,12 +75,13 @@ functions:
     handler: src/subscriber.handler
     events:
       - sns:
-          arn: arn:aws:sns:us-east-1:000000000000:NotifyTopic
+          # Deixamos apenas o nome, o Serverless resolve o resto
           topicName: NotifyTopic
+          displayName: "Notificacao de Itens"
 
 resources:
   Resources:
-    # Cria a Tabela DynamoDB [cite: 20]
+    # 1. Tabela DynamoDB
     ItemsTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -95,3 +95,9 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+
+    # 2. Tópico SNS (CORREÇÃO: Adicionado explicitamente)
+    NotifyTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: NotifyTopic

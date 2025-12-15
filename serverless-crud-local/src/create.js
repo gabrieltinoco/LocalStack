@@ -1,10 +1,12 @@
 const AWS = require("aws-sdk");
 const { v4: uuidv4 } = require("uuid");
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient({
-    endpoint: "http://localhost:4566",
-});
-const sns = new AWS.SNS({ endpoint: "http://localhost:4566" });
+const endpoint = process.env.LOCALSTACK_HOSTNAME
+    ? `http://${process.env.LOCALSTACK_HOSTNAME}:4566`
+    : 'http://localhost:4566';
+
+const dynamoDb = new AWS.DynamoDB.DocumentClient({ endpoint });
+const sns = new AWS.SNS({ endpoint });
 
 module.exports.handler = async (event) => {
     const body = JSON.parse(event.body);

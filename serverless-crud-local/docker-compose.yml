@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  localstack:
+    container_name: localstack_main
+    image: localstack/localstack
+    ports:
+      - "4566:4566"            # LocalStack Gateway
+    environment:
+      # ATENÇÃO: Adicionei 'logs' e 'cloudwatch' ao final da lista
+      - SERVICES=dynamodb,lambda,sns,apigateway,cloudformation,s3,iam,sts,logs,cloudwatch
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
